@@ -3,3 +3,4 @@ Elf,80,35,80,elf_100.gif,elf_300.gif
 Dwarf,110,45,65,dwarf_100.gif,dwarf_300.gif
 Human,100,50,50,human_100.gif,human_300.gif
 Hobbit,40,20,30,
+Me,100,100,100
