@@ -1,11 +1,9 @@
-from readline import set_history_length
 import tkinter as tk
-from unicodedata import name
 
 class Screen_Battle (tk.Frame):
     def __init__ (self, master, player1, player2, callback_on_exit):
         super().__init__(master)
-        
+
         # Save references to the two player objects
         self.player1 = player1
         self.player2 = player2
@@ -21,41 +19,34 @@ class Screen_Battle (tk.Frame):
         self.grid()
         
     def create_widgets (self):
-       
+        '''
+        This method creates all of the (initial) widgets for the battle page.
+        '''
+        self.attack_bttn = tk.Button(self, text="Attack", font=("Times New Roman", 12), fg="Cyan",bg="Green",command=self.attack_clicked)
+        self.attack_bttn.grid(row=0,column=0,rowspan=3,sticky=tk.NSEW, pady=(5,5), padx=(5,5))
+        self.p1AttackLabel = tk.Label(self, text=" ",font=("Times New Roman", 12))
+        self.p1AttackLabel.grid(row=0,column=1, sticky=tk.N)
+        self.p2AttackLabel = tk.Label(self, text=" ", font=("Times New Roman", 12))
+        self.p2AttackLabel.grid(row=1,column=1, sticky=tk.N)
+        self.victorLabel = tk.Label(self, text=" ", font=("Times New Roman", 12), fg = "Red")
+        self.victorLabel.grid(row=2,column=1, sticky=tk.N)
+        tk.Label(self, text = "You", font=("Times New Roman", 12)).grid(row=3,column=0, sticky=tk.N)
+        tk.Label(self, text = "Computer", font=("Times New Roman", 12)).grid(row=3,column=1, sticky=tk.N)
+        image1 = tk.PhotoImage(file="images/" + self.player1.large_image);
+        w = tk.Label (self,image = image1)
+        w.photo = image1 # saving the image as a property is required for "saving" the image. It's odd.
 
-       tk.Button(self, text= "Attack", font = "Impact 24", fg= "Red", command=self.attack_clicked).grid(row=1,column=3,columnspan = 3, sticky=tk.N, padx=(5,5))
-       tk.Label(self, text="You", font=("Times New Roman", 12)).grid(row=0,column=0,sticky=tk.N, padx=(5,5))
-       tk.Label(self, text="Computer", font=("Times New Roman", 12)).grid(row=0,column=1,sticky=tk.N, padx=(5,5))
-       
-       imageBig = tk.PhotoImage(file="images/" + self.player1.large_image)
-        
-       w= tk.Label (self,
-                        image = imageBig, 
-                         )
-       w.photo = imageBig
-       w.grid(row = 1, column = 0, sticky = tk.W)
+        w.grid (row=4,column=0, sticky=tk.N)
 
-       imageBig = tk.PhotoImage(file="images/" + self.player2.large_image)
-        
-       w= tk.Label (self,
-                        image = imageBig, 
-                         )
-       w.photo = imageBig
-       w.grid(row = 1, column = 1, sticky = tk.W)
-       t = self.player1.hit_points 
-       w = self.player2.hit_points
+        image2 = tk.PhotoImage(file="images/" + self.player2.large_image);
+        w = tk.Label (self,image = image2)
+        w.photo = image2 # saving the image as a property is required for "saving" the image. It's odd.
 
-       tk.Label(self, text=f"{self.player1.hit_points}/ {t} HP", font=("Times New Roman", 12)).grid(row=2,column=0,sticky=tk.N, padx=(5,5))
-       tk.Label(self, text=f"{self.player2.hit_points}/ {w} HP", font=("Times New Roman", 12)).grid(row=2,column=1,sticky=tk.N, padx=(5,5))
-
-       r1 = tk.Label(self, text=f"", font=("Times New Roman", 12)).grid(row=1,rowspan = 2, column=5,sticky=tk.N, padx=(5,5))
-       r2 = tk.Label(self, text=f"", font=("Times New Roman", 12)).grid(row=1,rowspan = 2, column=5,sticky=tk.N, padx=(5,5))
-       v = tk.Label(self, text=f"", font=("Times New Roman", 12)).grid(row=2,column=5,sticky=tk.N, padx=(5,5))
-       e = tk.Button(self, text= "", font = "Impact 24", fg= "Red", command=self.attack_clicked).grid(row=1,column=3,columnspan = 3, sticky=tk.N, padx=(5,5))
-        
-
-
-
+        w.grid (row=4,column=1, sticky=tk.N)
+        self.health1 = tk.Label(self, text = f"{self.player1.hit_points}/{self.player1_max_hp}", font=("Times New Roman", 12))
+        self.health1.grid(row=5,column=0, sticky=tk.N)
+        self.health2 = tk.Label(self, text = f"{self.player2.hit_points}/{self.player2_max_hp}", font=("Times New Roman", 12))
+        self.health2.grid(row=5,column=1, sticky=tk.N)
         
     def attack_clicked(self):
         ''' This method is called when the user presses the "Attack" button.
@@ -69,17 +60,32 @@ class Screen_Battle (tk.Frame):
             To remove a widget, use the destroy() method. For example:
     
                 self.button.destroy()   
-        '''    
-        result1 = self.player1.attack(self.player2)
-        result2 = self.player2.attack(self.player1)
-
-        if self.player1.hitpoints == 0:
-            winner = self.player2
-        elif self.player2.hitpoints == 0:
-            winner = self.player1
-
-
+        '''        
+        #
+        # TO DO
+        #
+        res1 = self.player1.attack(self.player2)
         
+        self.p1AttackLabel["text"] = res1
+
+        if (self.player2.hit_points>0):
+            res2 = self.player2.attack(self.player1)
+            self.p2AttackLabel["text"] = res2
+        else:
+            self.player2.hit_points = 0
+            self.p2AttackLabel["text"] = ""
+            self.victorLabel["text"] = f"{self.player1.name} has won. Woo."
+            
+        if (self.player1.hit_points <=0):
+            self.player1.hit_points = 0
+            self.victorLabel["text"] = f"{self.player2.name} has won. Woo."
+        
+        if (not self.player1.hit_points or not self.player2.hit_points):
+            self.attack_bttn.destroy()
+            tk.Button(self, text="Exit", font=("Times New Roman", 12), fg="Cyan",bg="Green",command=self.exit_clicked).grid(row=6,column=1, sticky=tk.E)
+
+        self.health1["text"] = f"{self.player1.hit_points}/{self.player1_max_hp}"
+        self.health2["text"] = f"{self.player2.hit_points}/{self.player2_max_hp}"
                                             
     def exit_clicked(self):
         ''' This method is called when the Exit button is clicked. 

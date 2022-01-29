@@ -12,42 +12,6 @@ class Screen_CharacterSelection (tk.Frame):
         self.create_widgets()
         
     def create_widgets (self):
-
-        self.character_index = tk.StringVar()
-        self.character_index.set(None)
-
-
-        tk.Label(self, text="Hit Points", font=("Times New Roman", 12)).grid(row=0,column=2,sticky=tk.N, padx=(5,5))
-        tk.Label(self, text="Dexterity", font=("Times New Roman", 12)).grid(row=0,column=3,sticky=tk.N, padx=(5,5))
-        tk.Label(self, text="Strength", font=("Times New Roman", 12)).grid(row=0,column=4,sticky=tk.N, padx=(5,5))
-
-        for i in range (self.roster.get_number_of_characters()):
-            character = self.roster.character_list[i]
-            tk.Radiobutton (self, text= character.name, variable = self.character_index, value = i).grid(row = i+1,column = 0, sticky = tk.W) 
-       
-            imageSmall = tk.PhotoImage(file="images/" + character.small_image)
-        
-            w= tk.Label (self,
-                        image = imageSmall, 
-                         )
-            w.photo = imageSmall
-            w.grid(row = i+1, column = 1, sticky = tk.W)
-
-    
-            tk.Label(self, text=character.hit_points, font=("Times New Roman", 12)).grid(row=i+1,column=2,sticky=tk.N, padx=(5,5))
-            tk.Label(self, text=character.dexterity, font=("Times New Roman", 12)).grid(row=i+1,column=3,sticky=tk.N, padx=(5,5))
-            tk.Label(self, text=character.strength, font=("Times New Roman", 12)).grid(row=i+1,column=4,sticky=tk.N, padx=(5,5))
-
-        tk.Button(self, text= "Character Selected", font = "Impact 24", fg= "Red", command=self.selected_clicked).grid(row=self.roster.get_number_of_characters()+1,column=3,columnspan = 2, sticky=tk.N, padx=(5,5))
-
-
-
-        
-
-       
-
-        
-
         '''
         This method creates all of the widgets character selector page.
         The information about each character should be derived from self.roster, 
@@ -56,7 +20,6 @@ class Screen_CharacterSelection (tk.Frame):
         in battle_characters.txt, the layout should automatically reflect those changes. 
         
         ########
-        
         
         The radio buttons on this page should all use the variable "self.character_index_index".  
         The values of the radio buttons must be a number equally the position of the character in the list. 
@@ -77,7 +40,31 @@ class Screen_CharacterSelection (tk.Frame):
 
             w.grid (ADD PARAMETERS HERE)
         '''
-       
+        self.character_index = tk.StringVar()
+        self.character_index.set(None)
+    
+        tk.Label(self, text="Hit Points", font=("Times New Roman", 12)).grid(row=0,column=2,sticky=tk.N, padx=(5,5))
+        tk.Label(self, text="Dexterity", font=("Times New Roman", 12)).grid(row=0,column=3,sticky=tk.N, padx=(5,5))
+        tk.Label(self, text="Strength", font=("Times New Roman", 12)).grid(row=0,column=4,sticky=tk.N, padx=(5,5))
+        for i in range(self.roster.get_number_of_characters()):
+            character = self.roster.character_list[i]
+            tk.Radiobutton(self, text=character.name,variable=self.character_index,value=i).grid(row=i+1,column=0)
+            
+            imageSmall = tk.PhotoImage(file="images/" + character.small_image);
+            w = tk.Label (self,image = imageSmall)
+            w.photo = imageSmall # saving the image as a property is required for "saving" the image. It's odd.
+
+            w.grid (row=i+1,column=1, sticky=tk.N)
+            tk.Label(self, text=character.hit_points, font=("Times New Roman", 12)).grid(row=i+1,column=2, padx=(5,5))
+            tk.Label(self, text=character.strength, font=("Times New Roman", 12)).grid(row=i+1,column=3, padx=(5,5))
+            tk.Label(self, text=character.dexterity, font=("Times New Roman", 12)).grid(row=i+1,column=4, padx=(5,5))
+
+        tk.Button(self, text="Character Selected", font=("Times New Roman", 12), fg="Cyan",bg="Green",command=self.selected_clicked).grid(row=self.roster.get_number_of_characters()+1,column=3, columnspan = 2,sticky=tk.E)
+        
+            
+            
+            
+        
         
        
  
